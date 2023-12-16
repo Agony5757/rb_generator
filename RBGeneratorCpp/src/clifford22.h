@@ -1,6 +1,8 @@
 #pragma once
 #include "utils.h"
 
+constexpr int clifford22_special_operation_count = 7;
+
 struct matrix22
 {
     static constexpr size_t ndim = 2;
@@ -321,7 +323,7 @@ inline std::vector<int> generate_clifford22_multiplication_table(
     const int N = group.size();
     std::vector<int> multiplication_table(N * N, 0);
 
-    // Ìî³ä³Ë·¨±í
+    // ï¿½ï¿½ï¿½Ë·ï¿½ï¿½ï¿½
     std::cout << "Generating table: " << std::endl;
     int i = 0;
     for (int i = 0; i < N; ++i) {
@@ -459,10 +461,17 @@ int generate_table22()
     auto group = initialize_clifford22();
 
     auto serializable_group_data = to_serializable_data(group);
-    int pos_of_identity = std::distance(group.begin(), group.find(I()));
+    std::vector<int> special_operation_table;
+    special_operation_table.push_back(std::distance(group.begin(), group.find(I())));
+    special_operation_table.push_back(std::distance(group.begin(), group.find(X())));
+    special_operation_table.push_back(std::distance(group.begin(), group.find(Y())));
+    special_operation_table.push_back(std::distance(group.begin(), group.find(SX())));
+    special_operation_table.push_back(std::distance(group.begin(), group.find(SY())));
+    special_operation_table.push_back(std::distance(group.begin(), group.find(SXdag())));
+    special_operation_table.push_back(std::distance(group.begin(), group.find(SYdag())));
     auto table = generate_clifford22_multiplication_table(group, serializable_group_data);
     int N = group.size();
-    auto inverse_table = generate_clifford22_inverse_table(table, N, pos_of_identity);
+    auto inverse_table = generate_clifford22_inverse_table(table, N, special_operation_table[0]);
     FILE* fp;
 
     fopen_s(&fp, "rb22.dat", "wb");
@@ -474,7 +483,7 @@ int generate_table22()
         return -1;
     }
 
-    fwrite(&pos_of_identity, sizeof(int), 1, fp);
+    fwrite(special_operation_table.data(), sizeof(int), special_operation_table.size(), fp);
     fwrite(table.data(), sizeof(int), table.size(), fp);
     fwrite(inverse_table.data(), sizeof(int), inverse_table.size(), fp);
     fwrite(serializable_group_data.data(), sizeof(KeyValueClifford22),
@@ -504,14 +513,14 @@ int load_and_generate_inverse_table22()
         std::cout << "File not found." << std::endl;
         return -1;
     }
-    int pos_of_identity;
+    std::vector<int> special_operations(clifford22_special_operation_count);
     std::vector<int> table(N * N);
     std::vector<int> inverse_table(N);
     std::vector<KeyValueClifford22> serializable_group_data(N);
-    fread(&pos_of_identity, sizeof(int), 1, fp);
+    fread(special_operations.data(), sizeof(int), special_operations.size(), fp);
     fread(table.data(), sizeof(int), table.size(), fp);
     // check_unique(table, N);
-    std::vector<int> inv_table = generate_clifford22_inverse_table(table, N, pos_of_identity);
+    std::vector<int> inv_table = generate_clifford22_inverse_table(table, N, special_operations[0]);
     return 0;
 }
 
@@ -525,11 +534,11 @@ int testrb22()
         std::cout << "File not found." << std::endl;
         return -1;
     }
-    int pos_of_identity;
+    std::vector<int> special_operations(clifford22_special_operation_count);
     std::vector<int> table(N * N);
     std::vector<int> inverse_table(N);
     std::vector<KeyValueClifford22> serializable_group_data(N);
-    fread(&pos_of_identity, sizeof(int), 1, fp);
+    fread(special_operations.data(), sizeof(int), special_operations.size(), fp);
     fread(table.data(), sizeof(int), table.size(), fp);
     fread(inverse_table.data(), sizeof(int), inverse_table.size(), fp);
     fread(serializable_group_data.data(), sizeof(KeyValueClifford22),
@@ -540,10 +549,9 @@ int testrb22()
 
     int current_mat = ud(eng);
     matrix22 this_matrix = serializable_group_data[current_mat].arr;
-    int i = 0;
-    while (i++ >= 0)
+    int i = 1000;
+    while (i --> 0)
     {
-        std::cout << i << " test pass" << std::endl;
         int new_mat = ud(eng);
         int next_mat = table[current_mat * N + new_mat];
         auto new_matrix = serializable_group_data[new_mat].arr;
@@ -556,38 +564,208 @@ int testrb22()
         this_matrix = next_matrix;
         current_mat = next_mat;
     }
+    std::cout << "test passed" << std::endl;
     return 0;
 }
 
-int load_and_test_rb22()
+inline bool rb22_checker(const std::vector<int> &sequence, const std::vector<int> &inv_sequence)
 {
-    int N = 24;
-    FILE* fp;
-    fopen_s(&fp, "rb22.dat", "rb");
-    if (!fp)
+    matrix22 m = I();
+
+    for (auto gate : sequence)
     {
-        std::cout << "File not found." << std::endl;
-        return -1;
+        switch (gate)
+        {    
+        case Generator_I22:
+            m = m * I(); break;
+        case Generator_X:
+            m = m * X(); break;
+        case Generator_Y:
+            m = m * Y(); break;
+        case Generator_SX:
+            m = m * SX(); break;
+        case Generator_SY:
+            m = m * SY(); break;
+        case Generator_SXdag:
+            m = m * SXdag(); break;
+        case Generator_SYdag:
+            m = m * SYdag(); break;
+        default:
+            throw std::runtime_error("Bad gate in sequence");
+        }
     }
-    int pos_of_identity;
-    std::vector<int> table(N * N);
-    std::vector<int> inverse_table(N);
-    std::vector<KeyValueClifford22> serializable_group_data(N);
-    fread(&pos_of_identity, sizeof(int), 1, fp);
-    fread(table.data(), sizeof(int), table.size(), fp);
-    fread(inverse_table.data(), sizeof(int), inverse_table.size(), fp);
-    fread(serializable_group_data.data(), sizeof(KeyValueClifford22),
-        serializable_group_data.size(), fp);
+    for (auto gate : inv_sequence)
+    {
+        switch (gate)
+        {
+        case Generator_I22:
+            m = m * I(); break;
+        case Generator_X:
+            m = m * X(); break;
+        case Generator_Y:
+            m = m * Y(); break;
+        case Generator_SX:
+            m = m * SX(); break;
+        case Generator_SY:
+            m = m * SY(); break;
+        case Generator_SXdag:
+            m = m * SXdag(); break;
+        case Generator_SYdag:
+            m = m * SYdag(); break;
+        default:
+            throw std::runtime_error("Bad gate in inv_sequence");
+        }
+    }
+    if (m.normalize() == I())
+        return true;
+    else
+        return false;
+}
+
+
+struct RB22
+{
+    int n_special_operations = 7;
+    int N = 24;
+    std::vector<int> special_operations;
+    std::vector<int> table;
+    std::vector<int> inverse_table;
+    std::vector<KeyValueClifford22> serializable_group_data;
+    bool loaded = false;
+
+    RB22() {}
+
+    inline void check_loaded() const
+    {
+        if (!loaded)
+            throw std::runtime_error("Load data before using RB classes!");
+    }
+
+    inline bool load_from_file(const std::string& filename)
+    {
+        FILE* fp = fopen(filename.c_str(), "rb");
+        if (!fp)
+        {
+            throw std::runtime_error("File not found.");
+        }
+        table = std::vector<int>(N * N);
+        inverse_table = std::vector<int>(N);
+        serializable_group_data = std::vector<KeyValueClifford22>(N);
+        special_operations = std::vector<int>(clifford22_special_operation_count);
+        fread(special_operations.data(), sizeof(int), n_special_operations, fp);
+        fread(table.data(), sizeof(int), table.size(), fp);
+        fread(inverse_table.data(), sizeof(int), inverse_table.size(), fp);
+        fread(serializable_group_data.data(), sizeof(KeyValueClifford22),
+            serializable_group_data.size(), fp);
+        fclose(fp);
+        loaded = true;
+        return true;
+    }
+
+    int get_multiplication_table_elem(int x, int y) const
+    {
+        check_loaded();
+        return table[x * N + y];
+    }
+
+    int get_inverse(int x) const
+    {
+        check_loaded();
+        return inverse_table[x];
+    }
+
+    inline const std::vector<KeyValueClifford22>& get_group_elements() const
+    {
+        check_loaded();
+        return serializable_group_data;
+    }
+
+    inline const std::vector<int>& get_table() const
+    {
+        check_loaded();
+        return table;
+    }
+
+    inline const std::vector<int>& get_inverse_table() const
+    {
+        check_loaded();
+        return inverse_table;
+    }
+
+    inline const matrix22_t& get_matrix(int x) const
+    {
+        return get_group_elements()[x].arr;
+    }
+
+    inline const auto& get_generator(int x) const
+    {
+        return get_group_elements()[x].buffer;
+    }
+
+    inline int get_generator_size(int x) const
+    {
+        return get_group_elements()[x].size;
+    }
+
+    inline std::tuple<std::vector<int>, std::vector<int>>
+        get_full_sequence_and_inverse_sequence(const std::vector<int>& input_sequence) const
+    {
+        check_loaded();
+        std::vector<int> full_sequence;
+        int multiplies = -1;
+        for (int input : input_sequence)
+        {
+            if (multiplies == -1)
+                multiplies = input;
+            else
+                multiplies = table[multiplies * N + input];
+
+            const auto& generator = serializable_group_data[input].buffer;
+            int generator_size = serializable_group_data[input].size;
+            full_sequence.insert(full_sequence.end(), generator.begin(), generator.begin() + generator_size);
+        }
+        int inverse = inverse_table[multiplies];
+        const auto& inverse_generator = serializable_group_data[inverse].buffer;
+        int inverse_generator_size = serializable_group_data[inverse].size;
+        std::vector<int> inverse_sequence;
+        inverse_sequence.insert(inverse_sequence.end(), inverse_generator.begin(), inverse_generator.begin() + inverse_generator_size);
+        return { full_sequence, inverse_sequence };
+    }
+
+    inline std::vector<std::string> get_special_operations_str() const
+    {
+        return { "I", "X", "Y", "X/2", "Y/2", "-X/2", "-Y/2" };
+    }
+
+    inline const std::vector<int>& get_special_operations() const
+    {
+        check_loaded();
+        return special_operations;
+    }
+
+};
+
+int load_and_test_rb22(int n_episode = 1000, int clifford_length = 1000)
+{
+    RB22 rb22;
+    rb22.load_from_file("rb22.dat");
 
     std::chrono::time_point tp1 = std::chrono::steady_clock::now();
-    for (int i = 0; i < 1000; ++i)
+    std::uniform_int_distribution<int> ud(0, rb22.N - 1);
+    std::default_random_engine eng(10085);
+    std::vector<int> random_sequence(clifford_length);
+    for (int i = 0; i < n_episode; ++i)
     {
-        volatile std::tuple<std::vector<int>, int> ret = rb22(table, inverse_table, 1000, N, serializable_group_data);
+        for (int j = 0; j < clifford_length; ++j)
+            random_sequence[j] = ud(eng);
+        auto&& [seq, inv] = rb22.get_full_sequence_and_inverse_sequence(random_sequence);
+        if (!rb22_checker(seq, inv))
+            throw std::runtime_error("Checker not passed.");
     }
     std::chrono::time_point tp2 = std::chrono::steady_clock::now();
 
     auto duration = tp2 - tp1;
-    std::cout << "RB 2 qubit with 1000 clifford depth\n";
+    std::cout << "RB 1 qubit with 1000 clifford depth\n";
     std::cout << "Generate 1000 random configurations duration = " << std::chrono::duration_cast<std::chrono::microseconds>(duration).count() << "us\n";
     return 0;
 }

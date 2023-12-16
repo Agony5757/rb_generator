@@ -27,7 +27,6 @@ PYBIND11_MODULE(RBGeneratorCpp, m)
 	py::class_<RB22>(m, "RB22")
 		.def(py::init<>())
 		.def_readonly("N", &RB22::N)
-		.def_readonly("pos_of_identity", &RB22::pos_of_identity)
 		.def("load_from_file", &RB22::load_from_file)
 		.def("get_multiplication_table_elem", &RB22::get_multiplication_table_elem)
 		.def("get_inverse", &RB22::get_inverse)
@@ -38,12 +37,13 @@ PYBIND11_MODULE(RBGeneratorCpp, m)
 		.def("get_generator", &RB22::get_generator, py::return_value_policy::reference)
 		.def("get_generator_size", &RB22::get_generator_size)
 		.def("get_full_sequence_and_inverse_sequence", &RB22::get_full_sequence_and_inverse_sequence)
+		.def("get_special_operations", &RB22::get_special_operations, py::return_value_policy::reference)
+		.def("get_special_operations_str", &RB22::get_special_operations_str)
 		;
 
 	py::class_<RB44>(m, "RB44")
 		.def(py::init<>())
 		.def_readonly("N", &RB44::N)
-		.def_readonly("pos_of_identity", &RB44::pos_of_identity)
 		.def("load_from_file", &RB44::load_from_file)
 		.def("get_multiplication_table_elem", &RB44::get_multiplication_table_elem)
 		.def("get_inverse", &RB44::get_inverse)
@@ -54,7 +54,12 @@ PYBIND11_MODULE(RBGeneratorCpp, m)
 		.def("get_generator", &RB44::get_generator, py::return_value_policy::reference)
 		.def("get_generator_size", &RB44::get_generator_size)
 		.def("get_full_sequence_and_inverse_sequence", &RB44::get_full_sequence_and_inverse_sequence)
+		.def("get_special_operations", &RB44::get_special_operations, py::return_value_policy::reference)
+		.def("get_special_operations_str", &RB44::get_special_operations_str)
 		;
+
+	m.def("rb22_checker", &rb22_checker);
+	m.def("rb44_checker", &rb44_checker);
 
 	m.doc() = "[Module RBGeneratorCpp]";
 }
