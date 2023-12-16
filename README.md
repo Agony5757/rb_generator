@@ -1,4 +1,4 @@
-# RB
+# Randomized benchmarking for 1-qubit and 2-qubit 
 
 ## Install
 ```
