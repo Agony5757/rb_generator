@@ -27,6 +27,7 @@ def testrb44():
 
     print(sequence)
     print(inverse_sequence)
+    
 
 def benchmark_rb44(n_episodes = 1000, n_length = 1000):
 
