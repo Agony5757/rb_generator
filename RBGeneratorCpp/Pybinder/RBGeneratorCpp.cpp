@@ -37,6 +37,7 @@ PYBIND11_MODULE(RBGeneratorCpp, m)
 		.def("get_matrix", &RB22::get_matrix, py::return_value_policy::reference)
 		.def("get_generator", &RB22::get_generator, py::return_value_policy::reference)
 		.def("get_generator_size", &RB22::get_generator_size)
+		.def("get_full_sequence_and_inverse_sequence", &RB22::get_full_sequence_and_inverse_sequence)
 		;
 
 	py::class_<RB44>(m, "RB44")
@@ -52,6 +53,7 @@ PYBIND11_MODULE(RBGeneratorCpp, m)
 		.def("get_matrix", &RB44::get_matrix, py::return_value_policy::reference)
 		.def("get_generator", &RB44::get_generator, py::return_value_policy::reference)
 		.def("get_generator_size", &RB44::get_generator_size)
+		.def("get_full_sequence_and_inverse_sequence", &RB44::get_full_sequence_and_inverse_sequence)
 		;
 
 	m.doc() = "[Module RBGeneratorCpp]";
