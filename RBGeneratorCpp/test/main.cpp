@@ -4,7 +4,7 @@
 
 int main44()
 {
-    // generate_table44();
+    generate_table44();
     // generate_readable_group_data44();
     // load_and_generate_inverse_table44();
     testrb44();
@@ -14,7 +14,7 @@ int main44()
 
 int main22()
 {
-    //generate_table22();
+    generate_table22();
     // generate_readable_group_data22();
     // load_and_generate_inverse_table22();
     testrb22();
@@ -25,5 +25,5 @@ int main22()
 int main()
 {
     main22();
-    main44();
+    // main44();
 }

@@ -459,16 +459,22 @@ inline int generate_readable_group_data22()
 int generate_table22()
 {
     auto group = initialize_clifford22();
-
+    auto id = I().normalize();
+    auto x = X().normalize();
+    auto y = Y().normalize();
+    auto sx = SX().normalize();
+    auto sy = SY().normalize();
+    auto sxdag = SXdag().normalize();
+    auto sydag = SYdag().normalize();
     auto serializable_group_data = to_serializable_data(group);
     std::vector<int> special_operation_table;
-    special_operation_table.push_back(std::distance(group.begin(), group.find(I())));
-    special_operation_table.push_back(std::distance(group.begin(), group.find(X())));
-    special_operation_table.push_back(std::distance(group.begin(), group.find(Y())));
-    special_operation_table.push_back(std::distance(group.begin(), group.find(SX())));
-    special_operation_table.push_back(std::distance(group.begin(), group.find(SY())));
-    special_operation_table.push_back(std::distance(group.begin(), group.find(SXdag())));
-    special_operation_table.push_back(std::distance(group.begin(), group.find(SYdag())));
+    special_operation_table.push_back(std::distance(group.begin(), group.find(id)));
+    special_operation_table.push_back(std::distance(group.begin(), group.find(x)));
+    special_operation_table.push_back(std::distance(group.begin(), group.find(y)));
+    special_operation_table.push_back(std::distance(group.begin(), group.find(sx)));
+    special_operation_table.push_back(std::distance(group.begin(), group.find(sy)));
+    special_operation_table.push_back(std::distance(group.begin(), group.find(sxdag)));
+    special_operation_table.push_back(std::distance(group.begin(), group.find(sydag)));
     auto table = generate_clifford22_multiplication_table(group, serializable_group_data);
     int N = group.size();
     auto inverse_table = generate_clifford22_inverse_table(table, N, special_operation_table[0]);
