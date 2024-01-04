@@ -574,59 +574,59 @@ inline std::tuple<std::vector<int>, int> rb22(
 //     return 0;
 // }
 
-// inline bool rb22_checker(const std::vector<int> &sequence, const std::vector<int> &inv_sequence)
-// {
-//     matrix22 m = I();
+inline bool rb22_checker(const std::vector<int> &sequence, const std::vector<int> &inv_sequence)
+{
+    matrix22 m = I();
 
-//     for (auto gate : sequence)
-//     {
-//         switch (gate)
-//         {    
-//         case Generator_I22:
-//             m = m * I(); break;
-//         case Generator_X:
-//             m = m * X(); break;
-//         case Generator_Y:
-//             m = m * Y(); break;
-//         case Generator_SX:
-//             m = m * SX(); break;
-//         case Generator_SY:
-//             m = m * SY(); break;
-//         case Generator_SXdag:
-//             m = m * SXdag(); break;
-//         case Generator_SYdag:
-//             m = m * SYdag(); break;
-//         default:
-//             throw std::runtime_error("Bad gate in sequence");
-//         }
-//     }
-//     for (auto gate : inv_sequence)
-//     {
-//         switch (gate)
-//         {
-//         case Generator_I22:
-//             m = m * I(); break;
-//         case Generator_X:
-//             m = m * X(); break;
-//         case Generator_Y:
-//             m = m * Y(); break;
-//         case Generator_SX:
-//             m = m * SX(); break;
-//         case Generator_SY:
-//             m = m * SY(); break;
-//         case Generator_SXdag:
-//             m = m * SXdag(); break;
-//         case Generator_SYdag:
-//             m = m * SYdag(); break;
-//         default:
-//             throw std::runtime_error("Bad gate in inv_sequence");
-//         }
-//     }
-//     if (m.normalize() == I())
-//         return true;
-//     else
-//         return false;
-// }
+    for (auto gate : sequence)
+    {
+        switch (gate)
+        {    
+        case Generator_I22:
+            m = m * I(); break;
+        case Generator_X:
+            m = m * X(); break;
+        case Generator_Y:
+            m = m * Y(); break;
+        case Generator_SX:
+            m = m * SX(); break;
+        case Generator_SY:
+            m = m * SY(); break;
+        case Generator_SXdag:
+            m = m * SXdag(); break;
+        case Generator_SYdag:
+            m = m * SYdag(); break;
+        default:
+            throw std::runtime_error("Bad gate in sequence");
+        }
+    }
+    for (auto gate : inv_sequence)
+    {
+        switch (gate)
+        {
+        case Generator_I22:
+            m = m * I(); break;
+        case Generator_X:
+            m = m * X(); break;
+        case Generator_Y:
+            m = m * Y(); break;
+        case Generator_SX:
+            m = m * SX(); break;
+        case Generator_SY:
+            m = m * SY(); break;
+        case Generator_SXdag:
+            m = m * SXdag(); break;
+        case Generator_SYdag:
+            m = m * SYdag(); break;
+        default:
+            throw std::runtime_error("Bad gate in inv_sequence");
+        }
+    }
+    if (m.normalize() == I())
+        return true;
+    else
+        return false;
+}
 
 
 struct RB22
