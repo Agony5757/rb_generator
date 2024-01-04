@@ -11,23 +11,24 @@
 #include <chrono>
 #include <omp.h>
 #include <sstream>
+#include <algorithm>
 
 constexpr double SQRT2 = 1.0 / 1.414213562373095145474621858739;
 
-inline bool operator<(const std::complex<double>& x, const std::complex<double>& y)
-{
-    return std::forward_as_tuple(x.real(), x.imag()) < std::forward_as_tuple(y.real(), y.imag());
+namespace std {
+    inline bool operator<(const ::std::complex<double>& x, const ::std::complex<double>& y)
+    {
+        return std::forward_as_tuple(x.real(), x.imag()) < std::forward_as_tuple(y.real(), y.imag());
+    }
 }
 
-constexpr double EPSILON = 1e-8; // 定义一个小的误差范围
+constexpr double EPSILON = 1e-8; 
 
-// 检查两个复数是否近似相等
 template<typename T>
 inline bool is_close(T a, T b) {
     return std::abs(a - b) < EPSILON;
 }
 
-// 检查一个复数是否接近0
 template<typename T>
 inline bool is_close_to_zero(T a) {
     return std::abs(a) < EPSILON;
