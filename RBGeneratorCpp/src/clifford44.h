@@ -410,7 +410,7 @@ inline std::vector<int> generate_clifford44_multiplication_table(
     const int N = group.size();
     std::vector<int> multiplication_table(N * N, 0);
 
-    // Ìî³ä³Ë·¨±í
+    // ï¿½ï¿½ï¿½Ë·ï¿½ï¿½ï¿½
     std::cout << "Generating table: " << std::endl;
     int i = 0;
     int gridsize = 288;
@@ -438,9 +438,9 @@ inline std::vector<int> generate_clifford44_multiplication_table(
     }
     //for (const auto& row : multiplication_table) {
     //    for (const auto& element : row) {
-    //        std::cout << std::setw(4) << element;  // ÉèÖÃ¿í¶ÈÎª4£¬Ê¹µÃÊä³öÕûÆë
+    //        std::cout << std::setw(4) << element;  // ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½Îª4ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     //    }
-    //    std::cout << std::endl;  // Ã¿´òÓ¡ÍêÒ»ÐÐºó»»ÐÐ
+    //    std::cout << std::endl;  // Ã¿ï¿½ï¿½Ó¡ï¿½ï¿½Ò»ï¿½Ðºï¿½ï¿½ï¿½
     //}
     return multiplication_table;
 }
@@ -529,148 +529,149 @@ inline std::tuple<std::vector<int>, int> rb44(
 /**************************************************************/
 /**************************************************************/
 
-inline int generate_readable_group_data44()
-{
-    // for debug
-    auto group = initialize_clifford44();
-    auto serializable_group_data = to_serializable_data(group);
-    FILE* fp;
-    fopen_s(&fp, "readable_group44.txt", "w");
+// inline int generate_readable_group_data44()
+// {
+//     // for debug
+//     auto group = initialize_clifford44();
+//     auto serializable_group_data = to_serializable_data(group);
+//     FILE* fp;
+//     fopen_s(&fp, "readable_group44.txt", "w");
 
-    if (!fp)
-    {
-        std::cout << "File not found." << std::endl;
-        return -1;
-    }
+//     if (!fp)
+//     {
+//         std::cout << "File not found." << std::endl;
+//         return -1;
+//     }
 
-    for (int i = 0; i < serializable_group_data.size(); ++i)
-    {
-        auto& data = serializable_group_data[i];
-        std::vector<int> vec(data.size);
-        for (int j = 0; j < vec.size(); ++j)
-        {
-            vec[j] = data.buffer[j];
-        }
-        fprintf_s(fp, "%5d : %s\n", i, vec2str(vec).c_str());
-    }
-    fclose(fp);
+//     for (int i = 0; i < serializable_group_data.size(); ++i)
+//     {
+//         auto& data = serializable_group_data[i];
+//         std::vector<int> vec(data.size);
+//         for (int j = 0; j < vec.size(); ++j)
+//         {
+//             vec[j] = data.buffer[j];
+//         }
+//         fprintf_s(fp, "%5d : %s\n", i, vec2str(vec).c_str());
+//     }
+//     fclose(fp);
 
-    return 0;
-}
+//     return 0;
+// }
 
-int generate_table44()
-{
-    auto group = initialize_clifford44();
+// int generate_table44()
+// {
+//     auto group = initialize_clifford44();
 
-    auto serializable_group_data = to_serializable_data(group);
-    std::vector<int> special_operation_table;
-    special_operation_table.push_back(std::distance(group.begin(), group.find(Identity44())));
-    special_operation_table.push_back(std::distance(group.begin(), group.find(CZ())));
+//     auto serializable_group_data = to_serializable_data(group);
+//     std::vector<int> special_operation_table;
+//     special_operation_table.push_back(std::distance(group.begin(), group.find(Identity44())));
+//     special_operation_table.push_back(std::distance(group.begin(), group.find(CZ())));
 
-    auto table = generate_clifford44_multiplication_table(group, serializable_group_data);
-    int N = group.size();
-    auto inverse_table = generate_clifford44_inverse_table(table, N, special_operation_table[0]);
-    FILE* fp;
+//     auto table = generate_clifford44_multiplication_table(group, serializable_group_data);
+//     int N = group.size();
+//     auto inverse_table = generate_clifford44_inverse_table(table, N, special_operation_table[0]);
+//     FILE* fp;
 
-    fopen_s(&fp, "rb44.dat", "wb");
+//     fopen_s(&fp, "rb44.dat", "wb");
 
-    if (!fp)
-    {
-        std::cout << "File not found." << std::endl;
-        std::cout << "Generate Failed." << std::endl;
-        return -1;
-    }
+//     if (!fp)
+//     {
+//         std::cout << "File not found." << std::endl;
+//         std::cout << "Generate Failed." << std::endl;
+//         return -1;
+//     }
 
-    fwrite(special_operation_table.data(), sizeof(int), special_operation_table.size(), fp);
-    fwrite(table.data(), sizeof(int), table.size(), fp);
-    fwrite(inverse_table.data(), sizeof(int), inverse_table.size(), fp);
-    fwrite(serializable_group_data.data(), sizeof(KeyValueClifford44),
-        serializable_group_data.size(), fp);
+//     fwrite(special_operation_table.data(), sizeof(int), special_operation_table.size(), fp);
+//     fwrite(table.data(), sizeof(int), table.size(), fp);
+//     fwrite(inverse_table.data(), sizeof(int), inverse_table.size(), fp);
+//     fwrite(serializable_group_data.data(), sizeof(KeyValueClifford44),
+//         serializable_group_data.size(), fp);
 
-    fclose(fp);
+//     fclose(fp);
 
-    if (!generate_readable_group_data44())
-    {
-        std::cout << "Generate Failed." << std::endl;
+//     if (!generate_readable_group_data44())
+//     {
+//         std::cout << "Generate Failed." << std::endl;
 
-        return -1;
-    }
+//         return -1;
+//     }
 
-    std::cout << "Generate End" << std::endl;
-    return 0;
-}
+//     std::cout << "Generate End" << std::endl;
+//     return 0;
+// }
 
 
-int load_and_generate_inverse_table44()
-{
-    int N = 11520;
-    FILE* fp;
-    fopen_s(&fp, "rb44.dat", "rb");
-    if (!fp)
-    {
-        std::cout << "File not found." << std::endl;
-        return -1;
-    }
-    std::vector<int> special_operations(clifford44_special_operation_count);
-    std::vector<int> table(N * N);
-    std::vector<int> inverse_table(N);
-    std::vector<KeyValueClifford44> serializable_group_data(N);
-    fread(special_operations.data(), sizeof(int), special_operations.size(), fp);
-    fread(table.data(), sizeof(int), table.size(), fp);
-    // check_unique(table, N);
-    std::vector<int> inv_table = generate_clifford44_inverse_table(table, N, special_operations[0]);
-    return 0;
-}
+// int load_and_generate_inverse_table44()
+// {
+//     int N = 11520;
+//     FILE* fp;
+//     fopen_s(&fp, "rb44.dat", "rb");
+//     if (!fp)
+//     {
+//         std::cout << "File not found." << std::endl;
+//         return -1;
+//     }
+//     std::vector<int> special_operations(clifford44_special_operation_count);
+//     std::vector<int> table(N * N);
+//     std::vector<int> inverse_table(N);
+//     std::vector<KeyValueClifford44> serializable_group_data(N);
+//     fread(special_operations.data(), sizeof(int), special_operations.size(), fp);
+//     fread(table.data(), sizeof(int), table.size(), fp);
+//     // check_unique(table, N);
+//     std::vector<int> inv_table = generate_clifford44_inverse_table(table, N, special_operations[0]);
+//     return 0;
+// }
 
-int testrb44()
-{
-    int N = 11520;
-    FILE* fp;
-    fopen_s(&fp, "rb44.dat", "rb");
-    if (!fp)
-    {
-        std::cout << "File not found." << std::endl;
-        return -1;
-    }
-    std::vector<int> special_operations(clifford44_special_operation_count);
-    std::vector<int> table(N* N);
-    std::vector<int> inverse_table(N);
-    std::vector<KeyValueClifford44> serializable_group_data(N);
-    fread(special_operations.data(), sizeof(int), special_operations.size(), fp);
-    fread(table.data(), sizeof(int), table.size(), fp);
-    fread(inverse_table.data(), sizeof(int), inverse_table.size(), fp);
-    fread(serializable_group_data.data(), sizeof(KeyValueClifford44),
-        serializable_group_data.size(), fp);
+// int testrb44()
+// {
+//     int N = 11520;
+//     FILE* fp;
+//     fopen_s(&fp, "rb44.dat", "rb");
+//     if (!fp)
+//     {
+//         std::cout << "File not found." << std::endl;
+//         return -1;
+//     }
+//     std::vector<int> special_operations(clifford44_special_operation_count);
+//     std::vector<int> table(N* N);
+//     std::vector<int> inverse_table(N);
+//     std::vector<KeyValueClifford44> serializable_group_data(N);
+//     fread(special_operations.data(), sizeof(int), special_operations.size(), fp);
+//     fread(table.data(), sizeof(int), table.size(), fp);
+//     fread(inverse_table.data(), sizeof(int), inverse_table.size(), fp);
+//     fread(serializable_group_data.data(), sizeof(KeyValueClifford44),
+//         serializable_group_data.size(), fp);
 
-    std::default_random_engine eng(10086);
-    std::uniform_int_distribution<int> ud(0, N - 1);
+//     std::default_random_engine eng(10086);
+//     std::uniform_int_distribution<int> ud(0, N - 1);
 
-    int current_mat = ud(eng);
-    matrix44 this_matrix = serializable_group_data[current_mat].arr;
-    int i = 1000;
-    while (i-- > 0)
-    {
-        int new_mat = ud(eng);
-        int next_mat = table[current_mat * N + new_mat];
-        auto new_matrix = serializable_group_data[new_mat].arr;
-        auto next_matrix = serializable_group_data[next_mat].arr;
-        auto inv_mat = inverse_table[next_mat];
-        auto inv_matrix = serializable_group_data[inv_mat].arr;
+//     int current_mat = ud(eng);
+//     matrix44 this_matrix = serializable_group_data[current_mat].arr;
+//     int i = 1000;
+//     while (i-- > 0)
+//     {
+//         int new_mat = ud(eng);
+//         int next_mat = table[current_mat * N + new_mat];
+//         auto new_matrix = serializable_group_data[new_mat].arr;
+//         auto next_matrix = serializable_group_data[next_mat].arr;
+//         auto inv_mat = inverse_table[next_mat];
+//         auto inv_matrix = serializable_group_data[inv_mat].arr;
 
-        if (!((this_matrix * new_matrix).normalize() == matrix44(next_matrix).normalize()))
-        {
-            throw std::runtime_error("bad computing");
-        }
-        if (!((matrix44(next_matrix) * inv_matrix).normalize() == Identity44()))
-        {
-            throw std::runtime_error("bad inversion");
-        }
-        this_matrix = next_matrix;
-        current_mat = next_mat;
-    }
-    std::cout << "test passed" << std::endl;
-    return 0;
-}
+//         if (!((this_matrix * new_matrix).normalize() == matrix44(next_matrix).normalize()))
+//         {
+//             throw std::runtime_error("bad computing");
+//         }
+//         if (!((matrix44(next_matrix) * inv_matrix).normalize() == Identity44()))
+//         {
+//             throw std::runtime_error("bad inversion");
+//         }
+//         this_matrix = next_matrix;
+//         current_mat = next_mat;
+//     }
+//     std::cout << "test passed" << std::endl;
+//     return 0;
+// }
+
 struct RB44
 {
     int N = 11520;
