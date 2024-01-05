@@ -148,7 +148,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name = "rb_generator",
-    version = "0.0.3",
+    version = "0.0.4",
     author = "Agony",
     long_description = readme,
     long_description_content_type="text/markdown",

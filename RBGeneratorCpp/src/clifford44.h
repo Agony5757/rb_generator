@@ -724,7 +724,7 @@ inline std::tuple<std::vector<int>, int> rb44(
 
      fclose(fp);
 
-     if (!generate_readable_group_data44())
+     if (generate_readable_group_data44())
      {
          std::cout << "Generate Failed." << std::endl;
 

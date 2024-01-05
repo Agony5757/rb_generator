@@ -448,7 +448,7 @@ inline std::tuple<std::vector<int>, int> rb22(
          {
              vec[j] = data.buffer[j];
          }
-         fprintf_s(fp, "%5d : %s\n", i, vec2str(vec).c_str());
+         fprintf(fp, "%5d : %s\n", i, vec2str(vec).c_str());
      }
      fclose(fp);
 
