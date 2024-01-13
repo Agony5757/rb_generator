@@ -1,9 +1,21 @@
 # Randomized benchmarking for 1-qubit and 2-qubit 
 
 ## Install
+### Install from pypi
 ```
 pip install rb_generator
 ```
+
+### Install from source
+```
+pip install .
+```
+
+### Packaging
+```
+python setup.py bdist_wheel
+```
+Find wheel file in dist/rb_generator_xxxx.whl
 
 ## Usage
 
