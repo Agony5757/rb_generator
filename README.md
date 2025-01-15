@@ -1,5 +1,7 @@
 # Randomized benchmarking for 1-qubit and 2-qubit 
 
+[![PyPI version](https://badge.fury.io/py/rb-generator.svg)](https://badge.fury.io/py/rb-generator)
+
 ## Install
 ### Install from pypi
 ```
