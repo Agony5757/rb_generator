@@ -38,18 +38,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install numpy pytest
 
-      - name: Download test data files
-        run: |
-          curl -sL -o rb22.dat "https://github.com/Agony5757/rb_generator/releases/download/${DATA_VERSION}/rb22.dat"
-          curl -sL -o rb44.dat "https://github.com/Agony5757/rb_generator/releases/download/${DATA_VERSION}/rb44.dat"
-
       - name: Build and install
         run: pip install -v .
 
-      - name: Run tests
+      - name: Run tests with data from GitHub
+        env:
+          RB_DATA_SOURCE: github
+          RB_DATA_DIR: /tmp/rb_data
         run: |
-          mv rb22.dat rb44.dat /tmp/
+          mkdir -p /tmp/rb_data
           cd /tmp
-          # Limit OpenMP threads to avoid segfault in pytest exit cleanup
-          # (OpenMP + fork in pytest process teardown is a known issue)
           OMP_NUM_THREADS=1 pytest ${{ github.workspace }}/test/test.py -v

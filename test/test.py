@@ -1,12 +1,20 @@
+import os
 import time
+import tempfile
+import shutil
 import rb_generator
 import numpy as np
 
+# Determine data source: 'github' in CI, 'local' otherwise
+DATA_SOURCE = os.environ.get('RB_DATA_SOURCE', 'local')
+DATA_DIR = os.environ.get('RB_DATA_DIR', tempfile.mkdtemp())
+
+# Load tables once at module level
+_rb22, _rb44 = rb_generator.load_table(DATA_DIR, from_=DATA_SOURCE)
+
+
 def test_rb22():
-    rb22 = rb_generator.RB22()
-    if not rb22.load_from_file('./rb22.dat'):
-        print('load failed')
-        exit(0)
+    rb22 = _rb22
     clifford_length = 100
     cliffords = np.random.randint(0, rb22.N, clifford_length)
     sequence, inverse_sequence = rb22.get_full_sequence_and_inverse_sequence(cliffords)
@@ -15,13 +23,9 @@ def test_rb22():
     print(sequence)
     print(inverse_sequence)
 
-    
-def test_rb44():
 
-    rb44 = rb_generator.RB44()
-    if not rb44.load_from_file('./rb44.dat'):
-        print('load failed')
-        exit(0)
+def test_rb44():
+    rb44 = _rb44
     clifford_length = 100
     cliffords = np.random.randint(0, rb44.N, clifford_length)
     sequence, inverse_sequence = rb44.get_full_sequence_and_inverse_sequence(cliffords)
@@ -29,15 +33,10 @@ def test_rb44():
             raise RuntimeError("Checker not passed.")
     print(sequence)
     print(inverse_sequence)
-    
+
 
 def benchmark_rb22(n_episodes = 1000, n_length = 1000):
-
-    rb22 = rb_generator.RB22()
-    if not rb22.load_from_file('./rb22.dat'):
-        print('load failed')
-        exit(0)
-
+    rb22 = _rb22
     t1 = time.time()
     for i in range(n_episodes):
         cliffords = np.random.randint(0, rb22.N, n_length)
@@ -49,12 +48,7 @@ def benchmark_rb22(n_episodes = 1000, n_length = 1000):
     print(f'Duration: {t2-t1} seconds, for {n_episodes} episodes (Clifford length = {n_length}).')
 
 def benchmark_rb44(n_episodes = 1000, n_length = 1000):
-
-    rb44 = rb_generator.RB44()
-    if not rb44.load_from_file('./rb44.dat'):
-        print('load failed')
-        exit(0)
-
+    rb44 = _rb44
     t1 = time.time()
     for i in range(n_episodes):
         cliffords = np.random.randint(0, rb44.N, n_length)
@@ -66,22 +60,13 @@ def benchmark_rb44(n_episodes = 1000, n_length = 1000):
     print(f'Duration: {t2-t1} seconds, for {n_episodes} episodes (Clifford length = {n_length}).')
 
 def test_irb22(interleaved_gate = 'X', n_episodes = 1000, n_length = 1000):
-
-    rb22 = rb_generator.RB22()
-    
-    if not rb22.load_from_file('./rb22.dat'):
-        print('load failed')
-        exit(0)
-
+    rb22 = _rb22
     special_gate_names = rb22.get_special_operations_str()
     special_gates = rb22.get_special_operations()
-    # print(special_gate_names)
-    # print(special_gates)
     if interleaved_gate not in special_gate_names:
         raise RuntimeError('Invalid interleaved gate.')
-    
+
     interleaved_gate_pos = special_gate_names.index(interleaved_gate)
-    special_gate_names.index(interleaved_gate)
     interleaved_group_pos = special_gates[interleaved_gate_pos]
 
     t1 = time.time()
@@ -97,22 +82,13 @@ def test_irb22(interleaved_gate = 'X', n_episodes = 1000, n_length = 1000):
     print(f'Test passed. Duration: {t2-t1} seconds, for {n_episodes} episodes (Clifford length = {n_length}).')
 
 def test_irb44(interleaved_gate = 'CZ', n_episodes = 1000, n_length = 1000):
-
-    rb44 = rb_generator.RB44()
-    
-    if not rb44.load_from_file('./rb44.dat'):
-        print('load failed')
-        exit(0)
-
+    rb44 = _rb44
     special_gate_names = rb44.get_special_operations_str()
     special_gates = rb44.get_special_operations()
-    # print(special_gate_names)
-    # print(special_gates)
     if interleaved_gate not in special_gate_names:
         raise RuntimeError('Invalid interleaved gate.')
-    
+
     interleaved_gate_pos = special_gate_names.index(interleaved_gate)
-    special_gate_names.index(interleaved_gate)
     interleaved_group_pos = special_gates[interleaved_gate_pos]
 
     t1 = time.time()
