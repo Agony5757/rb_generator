@@ -2,6 +2,7 @@ import re
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 import os
+import shutil
 import subprocess
 import sys
 
@@ -44,11 +45,9 @@ class CMakeBuild(build_ext):
 
         if self.compiler.compiler_type != "msvc":
             if not cmake_generator:
-                try:
-                    import ninja  # noqa: F401
-                    cmake_args += ["-GNinja"]
-                except ImportError:
-                    pass
+                ninja_path = shutil.which("ninja")
+                if ninja_path:
+                    cmake_args += ["-GNinja", f"-DCMAKE_MAKE_PROGRAM={ninja_path}"]
         else:
             single_config = any(x in cmake_generator for x in {"NMake", "Ninja"})
             contains_arch = any(x in cmake_generator for x in {"ARM", "Win64"})
