@@ -21,7 +21,4 @@ endif()
 
 find_package(OpenMP REQUIRED)
 
-find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
-include_directories(${Python3_INCLUDE_DIRS})
-
 add_subdirectory(RBGeneratorCpp)
