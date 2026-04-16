@@ -31,7 +31,7 @@ classifiers = [
 ]
 
 [project.urls]
-"Source Code" = "https://github.com/Agony5757/RBGeneratorCpp"
+"Source Code" = "https://github.com/Agony5757/rb_generator"
 
 [tool.setuptools]
 packages = ["rb_generator"]
