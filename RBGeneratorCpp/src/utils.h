@@ -8,6 +8,7 @@
 #include <tuple>
 #include <map>
 #include <random>
+#include <string>
 #include <chrono>
 #include <omp.h>
 #include <sstream>

@@ -455,7 +455,10 @@ inline std::tuple<std::vector<int>, int> rb22(
      return 0;
  }
 
- int generate_table22()
+ int generate_table22(const std::string& path);
+ int generate_table22() { return generate_table22("rb22.dat"); }
+
+ int generate_table22(const std::string& path)
  {
      auto group = initialize_clifford22();
      auto id = I().normalize();
@@ -479,11 +482,11 @@ inline std::tuple<std::vector<int>, int> rb22(
      auto inverse_table = generate_clifford22_inverse_table(table, N, special_operation_table[0]);
      FILE* fp;
 
-     fp = fopen("rb22.dat", "wb");
+     fp = fopen(path.c_str(), "wb");
 
      if (!fp)
      {
-         std::cout << "File not found." << std::endl;
+         std::cout << "Cannot open file: " << path << std::endl;
          std::cout << "Generate Failed." << std::endl;
          return -1;
      }

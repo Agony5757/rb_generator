@@ -61,6 +61,13 @@ PYBIND11_MODULE(RBGeneratorCpp, m)
 	m.def("rb22_checker", &rb22_checker);
 	m.def("rb44_checker", &rb44_checker);
 
+	m.def("generate_table22", static_cast<int(*)(const std::string&)>(&generate_table22),
+	      py::arg("path") = "rb22.dat",
+	      "Generate Clifford-22 multiplication table and write to path");
+	m.def("generate_table44", static_cast<int(*)(const std::string&)>(&generate_table44),
+	      py::arg("path") = "rb44.dat",
+	      "Generate Clifford-44 multiplication table and write to path");
+
 	m.doc() = "[Module RBGeneratorCpp]";
 }
 

@@ -693,7 +693,10 @@ inline std::tuple<std::vector<int>, int> rb44(
      return 0;
  }
 
- int generate_table44()
+ int generate_table44(const std::string& path);
+ int generate_table44() { return generate_table44("rb44.dat"); }
+
+ int generate_table44(const std::string& path)
  {
      auto group = initialize_clifford44();
 
@@ -707,11 +710,11 @@ inline std::tuple<std::vector<int>, int> rb44(
      auto inverse_table = generate_clifford44_inverse_table(table, N, special_operation_table[0]);
      FILE* fp;
 
-     fp = fopen("rb44.dat", "wb");
+     fp = fopen(path.c_str(), "wb");
 
      if (!fp)
      {
-         std::cout << "File not found." << std::endl;
+         std::cout << "Cannot open file: " << path << std::endl;
          std::cout << "Generate Failed." << std::endl;
          return -1;
      }
