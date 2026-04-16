@@ -51,8 +51,8 @@ def load_table(path=".", from_="github"):
 
 def _download_from_github(path):
     url_base = (
-        f"https://github.com/Agony5757/rb_generator"
-        f"/releases/download/{__version__}"
+        "https://github.com/Agony5757/rb_generator"
+        "/releases/download/0.0.4"
     )
     for name in ("rb22.dat", "rb44.dat"):
         dest = os.path.join(path, name)
