@@ -47,4 +47,7 @@ jobs:
         run: pip install -v .
 
       - name: Run tests
-        run: pytest test/test.py -v
+        run: |
+          mv rb22.dat rb44.dat /tmp/
+          cd /tmp
+          pytest ${{ github.workspace }}/test/test.py -v
