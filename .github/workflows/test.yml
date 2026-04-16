@@ -50,4 +50,6 @@ jobs:
         run: |
           mv rb22.dat rb44.dat /tmp/
           cd /tmp
-          pytest ${{ github.workspace }}/test/test.py -v
+          # Limit OpenMP threads to avoid segfault in pytest exit cleanup
+          # (OpenMP + fork in pytest process teardown is a known issue)
+          OMP_NUM_THREADS=1 pytest ${{ github.workspace }}/test/test.py -v

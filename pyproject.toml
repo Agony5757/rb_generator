@@ -53,6 +53,7 @@ before-all = "yum install -y libomp-devel || apt-get install -y libomp-dev"
 
 [tool.cibuildwheel.macos]
 before-all = "brew install libomp || true"
+environment = { CMAKE_ARGS = "-DCMAKE_BUILD_PARALLEL_LEVEL=4", CMAKE_PREFIX_PATH = "/opt/homebrew/opt/libomp;/usr/local/opt/libomp" }
 
 [tool.cibuildwheel.windows]
 before-all = ""
