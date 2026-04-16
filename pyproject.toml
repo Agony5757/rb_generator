@@ -33,6 +33,9 @@ classifiers = [
 [project.urls]
 "Source Code" = "https://github.com/Agony5757/RBGeneratorCpp"
 
+[tool.setuptools]
+packages = ["rb_generator"]
+
 [tool.setuptools_scm]
 version_file = "rb_generator/_version.py"
 
